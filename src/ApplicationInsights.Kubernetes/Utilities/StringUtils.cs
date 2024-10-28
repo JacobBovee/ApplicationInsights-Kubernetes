@@ -11,14 +11,13 @@
 
         public static string GetReadableSize(this long numInBytes)
         {
-            double doubleBytes = numInBytes;
+            if (numInBytes < 0) throw new ArgumentOutOfRangeException(nameof(numInBytes));
+
             string[] sizes = { "B", "KB", "MB", "GB", "TB" };
-            int order = 0;
-            while (doubleBytes >= 1024 && order < sizes.Length - 1)
-            {
-                order++;
-                doubleBytes /= 1024.0;
-            }
+            if (numInBytes == 0) return "0B";
+
+            int order = (int)Math.Log(numInBytes, 1024);
+            double doubleBytes = numInBytes / Math.Pow(1024, order);
 
             return String.Format(CultureInfo.InvariantCulture, "{0:0.#}{1}", doubleBytes, sizes[order]);
         }
